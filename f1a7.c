@@ -1,0 +1,176 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
+
+#define max_size 5
+
+typedef enum {
+    FALSE, TRUE
+} boolean;
+
+typedef boolean set_type[max_size];
+typedef int set_el;
+
+void Create(set_type s);
+void Universal(set_type s);
+void InsertElement(set_el el, set_type s);
+void DeleteElement(set_el el, set_type s);
+boolean InSet(set_el el, set_type s);
+boolean EmptySet(set_type s);
+boolean EqualSets(set_type s1, set_type s2);
+boolean Sebset(set_type s1, set_type s2);
+void Union(set_type s1, set_type s2, set_type union_set);
+void Intersection(set_type s1, set_type s2, set_type inters);
+void Subtraction(set_type s1, set_type s2, set_type subtr);
+void displayset(set_type s);
+void createPowerSet(set_type set[]);
+
+int main(){
+    int s = pow(2,max_size);
+    set_type set[s];
+    createPowerSet(set);
+    for(int i = 0;i<s;i++)
+        displayset(set[i]);
+
+}
+
+
+void createPowerSet(set_type set[]){
+    int i,j;
+    for(i=0;i<pow(2,max_size);i++){
+        Create(set[i]);
+        for(j=0;j<i;j++)
+            if((i>>j)&1)
+                InsertElement(j,set[i]);
+    }
+}
+
+void displayset(set_type set)
+{
+	set_el i;
+
+	for (i=0;i < max_size;i++)
+	{
+		if(InSet(i,set))
+			printf(" %d",i+1);
+	}
+	printf("\n");
+}
+
+
+//Creates empty set
+void Create(set_type s)
+{
+    set_el i;
+
+    for (i = 0; i < max_size; i++)
+        s[i] = FALSE;
+}
+
+//Creates a universal set
+void Universal(set_type s)
+{
+    set_el i;
+
+    for (i = 0; i < max_size; i++)
+        s[i] = TRUE;
+}
+
+//Adds an element to a set
+void InsertElement(set_el el, set_type s)
+{
+    s[el] = TRUE;
+}
+
+//Deletes and element from a set
+void DeleteElement(set_el el, set_type s)
+{
+    s[el] = FALSE;
+}
+
+//Checks if an element is in a set
+boolean InSet(set_el el, set_type s)
+{
+    return s[el];
+}
+
+//Checks if a set is empty
+boolean EmptySet(set_type s)
+{
+    set_el i;
+    boolean empty;
+
+    empty=TRUE;
+    i = 0;
+
+    while (i < max_size  && empty) {
+        if (InSet(i, s))
+            empty = FALSE;
+        else
+            i++;
+    }
+    return empty;
+}
+
+//Checks if two sets are equal
+boolean EqualSets(set_type s1, set_type s2)
+{
+    set_el i;
+    boolean isa;
+
+    isa = TRUE;
+    i=0;
+    while (i < max_size && isa)
+        if (InSet(i,s1) != InSet(i,s2))
+            isa = FALSE;
+        else
+            i++;
+    return isa;
+}
+
+//Checks if s1 is a subset of s2
+boolean Sebset(set_type s1, set_type s2)
+{
+    set_el i;
+    boolean subs;
+
+    subs = TRUE;
+    i=0;
+    while (i < max_size && subs)
+        if (InSet(i, s1) && !InSet(i, s2))
+            subs = FALSE;
+        else
+            i++;
+    return subs;
+}
+
+//Creates union of s1 and s2
+void Union(set_type s1, set_type s2, set_type union_set)
+{
+    set_el i;
+
+    for (i = 0; i < max_size; i++)
+        union_set[i] = InSet(i, s1) || InSet(i, s2);
+}
+
+//Creates the intersection of s1 and s2
+void Intersection(set_type s1, set_type s2, set_type inters)
+{
+    set_el i;
+
+    for (i = 0; i < max_size; i++)
+        inters[i] = InSet(i, s1) && InSet(i, s2);
+}
+
+//Creates s3 = s1-s2
+void Subtraction(set_type s1, set_type s2, set_type s3)
+{
+    set_el i;
+
+    for (i = 0; i < max_size; i++)
+        s3[i] = InSet(i, s1) && (!InSet(i, s2));
+}
+
+
